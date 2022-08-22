@@ -1,2 +1,2 @@
-# Current_Resume
-my updated resume, created with pagedown
+# Current Resume
+My updated resume, created with [https://github.com/rstudio/pagedown](rstudio/pagedown)
