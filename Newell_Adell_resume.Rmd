@@ -1,37 +1,20 @@
 ---
-title: "Adell Newell"
 output:
   pagedown::html_paged:
-    css: ["css/one-column-paged.css", "resume"]
+    css: ["one-column-paged-academic.css",  "https://use.fontawesome.com/releases/v5.7.2/css/all.css"]
     number_sections: false
-    self_contained: true
-knit: pagedown::chrome_print
+links-to-footnotes: true
+#knit: pagedown::chrome_print
 ---
 
-<!--"C:/Users/addie/AppData/Local/R/win-library/4.2/pagedown/resources/css/resume.css"
-
-"C:/Users/addie/OneDrive/Documents/Addie Resume/pagedown-cv-master/css/one-column-paged.css"-->
-
-<!-- this is what's supposed to be in css instead of "resume"
-"https://use.fontawesome.com/releases/v5.7.2/css/all.css"
--->
-
-<!-- IMPROVEMENTS TO BE MADE ON THIS RESUME: 8888888888888888888888888888888
-bro hathaway: Your bullets should highlight your DS skills and that you know how to PROBLEM SOLVE.  They should get to the point but not be vague.
-%%% ADD WAYS THAT I SOLVED PROBLEMS SOMEHOW
-TRY TO HAVE MORE SPECIFIC METRICS FOR THINGS I DID
-
-
--->
-
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 library(tidyverse)
 library(knitr)
 library(lubridate)
+library(glue)
 
-#### cv entries #####
-cv_entries <- read_csv("_content/cv_entries.csv") %>% 
+cv_entries <- read_csv("cv_entries_new.csv") %>% 
   mutate(year_begin = year(mdy(date)),
          time_begin = str_c(month(mdy(date), label = TRUE), " ", year(mdy(date)))) %>%
   mutate(year_end = case_when(
@@ -39,118 +22,71 @@ cv_entries <- read_csv("_content/cv_entries.csv") %>%
     date_end != "present" ~ str_c(month(mdy(date_end), label = TRUE)," ", year(mdy(date_end))),
     !is.na(date_end) ~ str_sub(date_end, 1, 4),
     is.na(date_end) ~ date_end
-  )) %>% mutate(year = str_c(time_begin, " --- <br>", year_end))
-  # mutate(year = ifelse((is.na(year_end) | year_begin == year_end),
-  #                     time_begin,
-  #                     str_c(year_begin, " --- ", year_end)))
+  )) %>% mutate(year = str_c(time_begin, " --- ", year_end))
 
 ```
 
-<!-- my contact information -->
 
+
+
+:::::: {.title-and-contact}
+
+::: {.title}
+<h1 class="title">Adell Newell</h1>
+:::
+
+<!-- contact info -->
 <font size="2">
   <center> 
-    (217\) 619-2362 | addienewell1\@gmail.com | linkedin.com/in/addie-newell
+    (217\) 619-2362 | addienewell1\@gmail.com | linkedin.com\/in\/addie-newell
   </center>
 </font>
 
+::::::
 
-## Education {.education .nohead .set-width}
+
+
+<div>
+  <font size="4">
+    <a><strong>Bachelor of Data Science</strong></a>
+    <a style="float:right">Brigham Young University - Idaho</a>
+  </font><br/>
+    <a><strong>Minor: Statistics, Cluster: Mathematics</strong></a>
+    <a style="float:right">Projected Graduation: July 2023</a>
+</div>
+
+
+
+
+<div class="cv-entries">
+
+## EXPERIENCE
+
+<hr style="height:1.5px;border-width:0;color:gray;background-color:gray">
+
 ```{r}
 cv_entries %>% 
-  filter(type == 'education') %>% 
-  mutate(what = str_c("<span class='work-title'><strong>", what, ", </strong>", where, "</span>", "<br>", additional_info, "<br> ", additional_info2)) %>% 
-  mutate(year = str_c(time_begin, " --- ", year_end)) %>% 
-  select(year, what) %>% 
-  kable()
-```
-
-
-<!--
-## Service {.service .nohead .set-width}
-```{r, eval=FALSE}
-cv_entries %>% 
-  filter(type == 'service') %>% 
-  mutate(year_end = ifelse(year_end == "present", "", year_end)) %>% 
-  mutate(where = ifelse(!is.na(url), str_c("[", where, "](", url, ")"), where)) %>% 
-  mutate(what = str_c(what, ", ", where)) %>%
-  select(year, what) %>% 
-  kable()
-```
--->
-
-
-## Experience {.work .nohead .vertical-top .set-width}
-```{r}
-cv_entries %>% 
-  filter(type == 'work', is.na(one_column_paged)) %>% 
+  filter(type == 'work') %>% 
   mutate(additional_info = replace_na(additional_info, ""),
          additional_info2 = replace_na(additional_info2, "")) %>% 
-  mutate(what = str_c("<span class='work-title'><strong>", what, ", </strong>", where, "</span><br class='work-break'> - ", additional_info, "<br>- ", additional_info2)) %>% 
+  mutate(what = str_c("<span class='work-title'><strong>", what, '</strong><a style="float:right">', where, "</a></span><br> - ", additional_info, "<br>- ", additional_info2)) %>% 
   select(year, what) %>% 
   kable()
+
 ```
 
 
+## TECHNICAL SKILLS
 
-## Technical skills {.technical .nohead .set-width}
-```{r, eval=FALSE}
-cv_entries %>% 
-  filter(type == 'technical') %>% 
-  mutate(icon = case_when(
-    str_detect(what, "data analysis") ~ "fa-bar-chart",
-    str_detect(what, "research") ~ "fa-flask",
-    str_detect(what, "Web") ~ "fa-laptop"
-  )) %>% 
-  mutate(icon = str_c("<i class='fa fa-lg ", icon, "'></i>")) %>% 
-  mutate(what = str_c(what, " ", additional_info)) %>% 
-  select(icon, what) %>% 
-  kable(escape = FALSE)
-```
-
-```{r}
-cv_entries %>% 
-  filter(type == 'technical') %>% 
-  mutate(icon = case_when(
-    str_detect(what, "data analysis") ~ "fa-bar-chart",
-    str_detect(what, "research") ~ "fa-flask",
-    str_detect(what, "Web") ~ "fa-laptop"
-  )) %>% 
-  mutate(icon = str_c("<i class='fa fa-lg ", icon, "'></i>")) %>% 
-  mutate(what = str_c(what, " ", additional_info)) %>% 
-  select(what) %>% 
-  kable(escape = FALSE)
-```
+<hr style="height:1.5px;border-width:0;color:gray;background-color:gray">
 
 
-<!--
-## Software development {.nohead .vertical-top .set-width}
-```{r}
-cv_entries %>% 
-  filter(type == 'programming') %>% 
-  replace_na(list(where = "", additional_info = "")) %>% 
-  mutate(what = str_c(what, ", ", where, "<br>", additional_info)) %>% 
-  select(time_begin, what) %>% 
-  arrange(desc(time_begin)) %>% 
-  kable(align = c('l', 'l'))
-```
+R (including Tidyverse packages) for data science, statistical analysis, and visualization (1.5 years)<br>
+Python for data science, including Pandas and Altair (1.5 years)<br>
+Some experience using Scikit-learn and TensorFlow to create machine learning models<br>
+Create, populate, and query databases with SQL (1 year), some experience with PL/SQL<br>
+Some experience with Power BI, Excel, and other Microsoft Office products
 
-<br class="pageBreak">
 
-## Personal skills & volunteering {.personal .nohead .set-width}
-```{r}
-cv_entries %>%
-  filter(type == 'volunteering' & professional_2_page == 'y') %>%
-  mutate(what = str_c("<span class='work-title'>", what, "</span><br class='work-break'>", where)) %>%
-  mutate(what = ifelse(!is.na(additional_info), str_c(what, "<br>", additional_info), what)) %>%
-  arrange(order, desc(year_end), desc(year)) %>%
-  select(year, what) %>%
-  kable()
-```
 
-<br class="pageBreak">
-
-### Links
-
--->
 
